@@ -1,4 +1,4 @@
-use ethers::signers::LocalWallet;
+use ethers::{signers::LocalWallet, types::Address};
 use hyperliquid_rust_sdk::{BaseUrl, ExchangeClient};
 use log::info;
 
@@ -16,10 +16,12 @@ async fn main() {
             .unwrap();
 
     let max_fee_rate = "0.1%";
-    let builder = "0x1ab189B7801140900C711E458212F9c76F8dAC79".to_lowercase();
+    let builder = "0x1ab189B7801140900C711E458212F9c76F8dAC79"
+        .parse::<Address>()
+        .unwrap();
 
     let resp = exchange_client
-        .approve_builder_fee(builder.to_string(), max_fee_rate.to_string(), Some(&wallet))
+        .approve_builder_fee(builder, max_fee_rate.to_string(), Some(&wallet))
         .await;
     info!("resp: {resp:#?}");
 }

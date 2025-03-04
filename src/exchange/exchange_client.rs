@@ -18,6 +18,7 @@ use crate::{
     BaseUrl, BulkCancelCloid, Error, ExchangeResponseStatus,
 };
 use crate::{ClassTransfer, SpotSend, SpotUser, VaultTransfer, Withdraw3};
+use ethers::types::Address;
 use ethers::{
     abi::AbiEncode,
     signers::{LocalWallet, Signer},
@@ -731,7 +732,7 @@ impl ExchangeClient {
 
     pub async fn approve_builder_fee(
         &self,
-        builder: String,
+        builder: Address,
         max_fee_rate: String,
         wallet: Option<&LocalWallet>,
     ) -> Result<ExchangeResponseStatus> {
@@ -743,20 +744,16 @@ impl ExchangeClient {
         } else {
             "Testnet".to_string()
         };
-
-        let action = Actions::ApproveBuilderFee(ApproveBuilderFee {
+        let approve_builder_fee: ApproveBuilderFee = ApproveBuilderFee {
             signature_chain_id: 421614.into(),
             hyperliquid_chain,
             builder,
             max_fee_rate,
             nonce: timestamp,
-        });
-
-        let connection_id = action.hash(timestamp, self.vault_address)?;
-        let action = serde_json::to_value(&action).map_err(|e| Error::JsonParse(e.to_string()))?;
-
-        let is_mainnet = self.http_client.is_mainnet();
-        let signature = sign_l1_action(wallet, connection_id, is_mainnet)?;
+        };
+        let signature = sign_typed_data(&approve_builder_fee, wallet)?;
+        let action = serde_json::to_value(Actions::ApproveBuilderFee(approve_builder_fee))
+            .map_err(|e| Error::JsonParse(e.to_string()))?;
         self.post(action, signature, timestamp).await
     }
 }

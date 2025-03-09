@@ -1,7 +1,10 @@
+use std::str::FromStr;
+
 use ethers::{
     core::k256::{elliptic_curve::FieldBytes, Secp256k1},
-    signers::LocalWallet,
+    signers::{LocalWallet, Signer},
     types::{transaction::eip712::Eip712, Signature, H256, U256},
+    utils::keccak256,
 };
 
 use crate::{prelude::*, proxy_digest::Sha256Proxy, signature::agent::l1, Error};
@@ -25,7 +28,6 @@ pub(crate) fn sign_typed_data<T: Eip712>(payload: &T, wallet: &LocalWallet) -> R
     let encoded = payload
         .encode_eip712()
         .map_err(|e| Error::Eip712(e.to_string()))?;
-
     sign_hash(H256::from(encoded), wallet)
 }
 

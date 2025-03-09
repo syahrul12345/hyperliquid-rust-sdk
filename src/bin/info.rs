@@ -2,30 +2,30 @@ use ethers::types::H160;
 use hyperliquid_rust_sdk::{BaseUrl, InfoClient};
 use log::info;
 
-const ADDRESS: &str = "0xc64cc00b46101bd40aa1c3121195e85c0b0918d8";
+const ADDRESS: &str = "0x0bd592152216b0d21175c8cf856b5be05f3a7c3e";
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
-    let info_client = InfoClient::new(None, Some(BaseUrl::Testnet)).await.unwrap();
-    open_orders_example(&info_client).await;
+    let info_client = InfoClient::new(None, Some(BaseUrl::Mainnet)).await.unwrap();
+    // open_orders_example(&info_client).await;
     user_state_example(&info_client).await;
-    user_states_example(&info_client).await;
-    recent_trades(&info_client).await;
-    meta_example(&info_client).await;
-    all_mids_example(&info_client).await;
-    user_fills_example(&info_client).await;
-    funding_history_example(&info_client).await;
-    l2_snapshot_example(&info_client).await;
-    candles_snapshot_example(&info_client).await;
+    // user_states_example(&info_client).await;
+    // recent_trades(&info_client).await;
+    // meta_example(&info_client).await;
+    // all_mids_example(&info_client).await;
+    // user_fills_example(&info_client).await;
+    // funding_history_example(&info_client).await;
+    // l2_snapshot_example(&info_client).await;
+    // candles_snapshot_example(&info_client).await;
     user_token_balances_example(&info_client).await;
-    user_fees_example(&info_client).await;
-    user_funding_example(&info_client).await;
-    spot_meta_example(&info_client).await;
-    spot_meta_and_asset_contexts_example(&info_client).await;
-    query_order_by_oid_example(&info_client).await;
-    query_referral_state_example(&info_client).await;
-    historical_orders_example(&info_client).await;
+    // user_fees_example(&info_client).await;
+    // user_funding_example(&info_client).await;
+    // spot_meta_example(&info_client).await;
+    // spot_meta_and_asset_contexts_example(&info_client).await;
+    // query_order_by_oid_example(&info_client).await;
+    // query_referral_state_example(&info_client).await;
+    // historical_orders_example(&info_client).await;
 }
 
 fn address() -> H160 {

@@ -83,7 +83,7 @@ pub struct NonUserCancel {
     pub oid: u64,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct CandleData {
     #[serde(rename = "T")]
     pub time_close: u64,
@@ -287,6 +287,13 @@ pub struct ActiveAssetCtxData {
     pub ctx: AssetCtx,
 }
 
+#[derive(Deserialize, Clone, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct ActiveSpotAssetCtxData {
+    pub coin: String,
+    pub ctx: SpotAssetCtx,
+}
+
 #[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 #[serde(untagged)]
@@ -314,17 +321,11 @@ pub struct PerpsAssetCtx {
     pub oracle_px: String,
 }
 
-#[derive(Deserialize, Clone, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct ActiveSpotAssetCtxData {
-    pub coin: String,
-    pub ctx: SpotAssetCtx,
-}
-
 #[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct SpotAssetCtx {
     #[serde(flatten)]
     pub shared: SharedAssetCtx,
     pub circulating_supply: String,
+    pub total_supply: String,
 }

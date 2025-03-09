@@ -65,7 +65,6 @@ pub enum Subscription {
     UserNonFundingLedgerUpdates { user: H160 },
     ActiveAssetCtx { coin: String },
 }
-
 #[derive(Deserialize, Clone, Debug)]
 #[serde(tag = "channel")]
 #[serde(rename_all = "camelCase")]
@@ -366,7 +365,6 @@ impl WsManager {
                 .map_err(|e| Error::JsonParse(e.to_string()))?,
         })
         .map_err(|e| Error::JsonParse(e.to_string()))?;
-
         writer
             .send(protocol::Message::Text(payload))
             .await
@@ -394,7 +392,6 @@ impl WsManager {
         sending_channel: UnboundedSender<Message>,
     ) -> Result<u32> {
         let mut subscriptions = self.subscriptions.lock().await;
-
         let identifier_entry = if let Subscription::UserEvents { user: _ } =
             serde_json::from_str::<Subscription>(&identifier)
                 .map_err(|e| Error::JsonParse(e.to_string()))?

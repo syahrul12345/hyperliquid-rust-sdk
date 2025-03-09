@@ -12,6 +12,7 @@ use crate::{
 };
 
 use ethers::types::H160;
+use log::info;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -137,9 +138,9 @@ impl InfoClient {
             self.ws_manager = Some(ws_manager);
         }
 
-        let identifier =
-            serde_json::to_string(&subscription).map_err(|e| Error::JsonParse(e.to_string()))?;
-
+        let identifier = serde_json::to_string(&subscription)
+            .map_err(|e| Error::JsonParse(e.to_string()))
+            .unwrap();
         self.ws_manager
             .as_mut()
             .ok_or(Error::WsManagerNotFound)?
@@ -170,7 +171,6 @@ impl InfoClient {
     ) -> Result<T> {
         let data =
             serde_json::to_string(&info_request).map_err(|e| Error::JsonParse(e.to_string()))?;
-
         let return_data = self.http_client.post("/info", data).await?;
         serde_json::from_str(&return_data).map_err(|e| Error::JsonParse(e.to_string()))
     }

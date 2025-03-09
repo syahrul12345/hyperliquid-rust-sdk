@@ -1,4 +1,5 @@
-use ethers::{signers::LocalWallet, types::Address};
+use ethers::signers::{LocalWallet, Signer};
+use ethers::types::Address;
 use hyperliquid_rust_sdk::{BaseUrl, ExchangeClient};
 use log::info;
 
@@ -6,17 +7,19 @@ use log::info;
 async fn main() {
     env_logger::init();
     // Key was randomly generated for testing and shouldn't be used with any real funds
-    let wallet: LocalWallet = "e908f86dbb4d55ac876378565aafeabc187f6690f046459397b17d9b9a19688e"
-        .parse()
-        .unwrap();
-
+    let wallet: LocalWallet = "135a1fd962e917e703b11e6393ec457c87a9b1b514537be76737ebd86e28c9b5"
+        .parse::<LocalWallet>()
+        .unwrap()
+        .with_chain_id(421614 as u64);
+    let address = wallet.address();
+    println!("address: {:?}", address);
     let exchange_client =
-        ExchangeClient::new(None, wallet.clone(), Some(BaseUrl::Testnet), None, None)
+        ExchangeClient::new(None, wallet.clone(), Some(BaseUrl::Mainnet), None, None)
             .await
             .unwrap();
 
-    let max_fee_rate = "0.1%";
-    let builder = "0x1ab189B7801140900C711E458212F9c76F8dAC79"
+    let max_fee_rate = "0.001%";
+    let builder = "0xDF06e2472784fffA3FFED9Ed4a05425DC569D24a"
         .parse::<Address>()
         .unwrap();
 

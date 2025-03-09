@@ -1,5 +1,10 @@
+use std::str::FromStr;
+
 use crate::exchange::{cancel::CancelRequest, modify::ModifyRequest, order::OrderRequest};
-use ethers::types::Address;
+use ethers::{
+    abi::Token,
+    types::{Address, H256},
+};
 pub(crate) use ethers::{
     abi::{encode, ParamType, Tokenizable},
     types::{
@@ -339,6 +344,54 @@ impl Eip712 for ApproveBuilderFee {
             encode_eip712_type(hyperliquid_chain.clone().into_token()),
             encode_eip712_type(max_fee_rate.clone().into_token()),
             encode_eip712_type(builder.clone().into_token()),
+            encode_eip712_type(nonce.into_token()),
+        ];
+        Ok(keccak256(encode(&items)))
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct UsdClassTransfer {
+    pub signature_chain_id: U256,
+    pub hyperliquid_chain: String,
+    pub amount: String,
+    pub to_perp: bool,
+    pub nonce: u64,
+}
+
+impl Eip712 for UsdClassTransfer {
+    type Error = Eip712Error;
+
+    fn domain(&self) -> Result<EIP712Domain, Self::Error> {
+        Ok(eip_712_domain(self.signature_chain_id))
+    }
+
+    fn type_hash() -> Result<[u8; 32], Self::Error> {
+        Ok(eip712::make_type_hash(
+            format!("{HYPERLIQUID_EIP_PREFIX}UsdClassTransfer"),
+            &[
+                ("hyperliquidChain".to_string(), ParamType::String),
+                ("amount".to_string(), ParamType::String),
+                ("toPerp".to_string(), ParamType::Bool),
+                ("nonce".to_string(), ParamType::Uint(64)),
+            ],
+        ))
+    }
+
+    fn struct_hash(&self) -> Result<[u8; 32], Self::Error> {
+        let Self {
+            signature_chain_id: _,
+            hyperliquid_chain,
+            amount,
+            to_perp,
+            nonce,
+        } = self;
+        let items = vec![
+            ethers::abi::Token::Uint(Self::type_hash()?.into()),
+            encode_eip712_type(hyperliquid_chain.clone().into_token()),
+            encode_eip712_type(amount.clone().into_token()),
+            encode_eip712_type(to_perp.clone().into_token()),
             encode_eip712_type(nonce.into_token()),
         ];
         Ok(keccak256(encode(&items)))

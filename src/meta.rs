@@ -94,5 +94,5 @@ pub struct TokenInfo {
 #[derive(Debug, Deserialize, Clone)]
 pub struct EvmContract {
     pub address: Address,
-    pub evm_extra_wei_decimals: u8
+    pub evm_extra_wei_decimals: i16
 }

@@ -92,7 +92,6 @@ pub struct TokenInfo {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
 pub struct EvmContract {
     pub address: Address,
     pub evm_extra_wei_decimals: u8

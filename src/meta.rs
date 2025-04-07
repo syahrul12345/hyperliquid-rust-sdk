@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use ethers::abi::ethereum_types::H128;
+use ethers::{abi::ethereum_types::H128, types::Address};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Clone)]
@@ -88,4 +88,12 @@ pub struct TokenInfo {
     pub index: usize,
     pub token_id: H128,
     pub is_canonical: bool,
+    pub evm_contract: Option<EvmContract>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct EvmContract {
+    pub address: Address,
+    pub evm_extra_wei_decimals: u8
 }

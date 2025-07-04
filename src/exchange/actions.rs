@@ -1,10 +1,7 @@
 use std::str::FromStr;
 
 use crate::exchange::{cancel::CancelRequest, modify::ModifyRequest, order::OrderRequest};
-use ethers::{
-    abi::Token,
-    types::{Address, H256},
-};
+use alloy::primitives::{Address, U256};
 pub(crate) use ethers::{
     abi::{encode, ParamType, Tokenizable},
     types::{
@@ -12,7 +9,6 @@ pub(crate) use ethers::{
             eip712,
             eip712::{encode_eip712_type, EIP712Domain, Eip712, Eip712Error},
         },
-        H160, U256,
     },
     utils::keccak256,
 };
@@ -26,7 +22,7 @@ fn eip_712_domain(chain_id: U256) -> EIP712Domain {
     EIP712Domain {
         name: Some("HyperliquidSignTransaction".to_string()),
         version: Some("1".to_string()),
-        chain_id: Some(chain_id),
+        chain_id: Some(ethers::types::U256(chain_id.into_limbs())),
         verifying_contract: Some(
             "0x0000000000000000000000000000000000000000"
                 .parse()
@@ -132,7 +128,7 @@ pub struct BulkCancelCloid {
 pub struct ApproveAgent {
     pub signature_chain_id: U256,
     pub hyperliquid_chain: String,
-    pub agent_address: H160,
+    pub agent_address: Address,
     pub agent_name: Option<String>,
     pub nonce: u64,
 }
@@ -291,7 +287,7 @@ pub struct ClassTransfer {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct VaultTransfer {
-    pub vault_address: H160,
+    pub vault_address: Address,
     pub is_deposit: bool,
     pub usd: String,
 }

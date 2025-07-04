@@ -1,5 +1,6 @@
-use ethers::signers::{LocalWallet, Signer};
-use ethers::types::Address;
+use alloy::primitives::ChainId;
+use alloy::{primitives::Address, signers::local::PrivateKeySigner};
+use alloy::signers::Signer;
 use hyperliquid_rust_sdk::{BaseUrl, ExchangeClient};
 use log::info;
 
@@ -7,10 +8,10 @@ use log::info;
 async fn main() {
     env_logger::init();
     // Key was randomly generated for testing and shouldn't be used with any real funds
-    let wallet: LocalWallet = "135a1fd962e917e703b11e6393ec457c87a9b1b514537be76737ebd86e28c9b5"
-        .parse::<LocalWallet>()
+    let wallet: PrivateKeySigner = "135a1fd962e917e703b11e6393ec457c87a9b1b514537be76737ebd86e28c9b5"
+        .parse::<PrivateKeySigner>()
         .unwrap()
-        .with_chain_id(421614 as u64);
+        .with_chain_id(Some(ChainId::from(421614_u64)));
     let address = wallet.address();
     println!("address: {:?}", address);
     let exchange_client =

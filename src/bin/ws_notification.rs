@@ -1,8 +1,8 @@
+use alloy::primitives::Address;
 use log::info;
 
 use std::str::FromStr;
 
-use ethers::types::H160;
 use hyperliquid_rust_sdk::{BaseUrl, InfoClient, Message, Subscription};
 use tokio::{
     spawn,
@@ -14,7 +14,7 @@ use tokio::{
 async fn main() {
     env_logger::init();
     let mut info_client = InfoClient::new(None, Some(BaseUrl::Testnet)).await.unwrap();
-    let user = H160::from_str("0x0bd592152216b0d21175c8cf856b5be05f3a7c3e").unwrap();
+    let user = Address::from_str("0x0bd592152216b0d21175c8cf856b5be05f3a7c3e").unwrap();
 
     let (sender, mut receiver) = unbounded_channel();
     let subscription_id = info_client

@@ -3,7 +3,7 @@ use crate::{
     helpers::{float_to_string_for_hashing, uuid_to_hex_string},
     prelude::*,
 };
-use ethers::signers::LocalWallet;
+use alloy::signers::Signer;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -60,24 +60,24 @@ pub struct ClientTrigger {
 }
 
 #[derive(Debug)]
-pub struct MarketOrderParams<'a> {
+pub struct MarketOrderParams<'a, T: Signer> {
     pub asset: &'a str,
     pub is_buy: bool,
     pub sz: f64,
     pub px: Option<f64>,
     pub slippage: Option<f64>,
     pub cloid: Option<Uuid>,
-    pub wallet: Option<&'a LocalWallet>,
+    pub wallet: Option<&'a T>,
 }
 
 #[derive(Debug)]
-pub struct MarketCloseParams<'a> {
+pub struct MarketCloseParams<'a, T: Signer> {
     pub asset: &'a str,
     pub sz: Option<f64>,
     pub px: Option<f64>,
     pub slippage: Option<f64>,
     pub cloid: Option<Uuid>,
-    pub wallet: Option<&'a LocalWallet>,
+    pub wallet: Option<&'a T>,
 }
 
 #[derive(Debug)]

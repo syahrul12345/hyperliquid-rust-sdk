@@ -1,13 +1,13 @@
+use alloy::signers::local::PrivateKeySigner;
 use log::info;
 
-use ethers::signers::{LocalWallet, Signer};
 use hyperliquid_rust_sdk::{BaseUrl, ClientLimit, ClientOrder, ClientOrderRequest, ExchangeClient};
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
     // Key was randomly generated for testing and shouldn't be used with any real funds
-    let wallet: LocalWallet = "e908f86dbb4d55ac876378565aafeabc187f6690f046459397b17d9b9a19688e"
+    let wallet: PrivateKeySigner = "e908f86dbb4d55ac876378565aafeabc187f6690f046459397b17d9b9a19688e"
         .parse()
         .unwrap();
 
@@ -23,7 +23,7 @@ async fn main() {
     let (private_key, response) = exchange_client.approve_agent(None).await.unwrap();
     info!("Agent creation response: {response:?}");
 
-    let wallet: LocalWallet = private_key.parse().unwrap();
+    let wallet: PrivateKeySigner = private_key.parse().unwrap();
 
     info!("Agent address: {:?}", wallet.address());
 

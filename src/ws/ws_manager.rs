@@ -4,6 +4,7 @@ use crate::{
     ActiveAssetCtx, Error, Notification, UserFills, UserFundings, UserNonFundingLedgerUpdates,
     WebData2,
 };
+use alloy::primitives::Address;
 use futures_util::{stream::SplitSink, SinkExt, StreamExt};
 use log::{error, info, warn};
 use serde::{Deserialize, Serialize};
@@ -29,7 +30,6 @@ use tokio_tungstenite::{
     MaybeTlsStream, WebSocketStream,
 };
 
-use ethers::types::H160;
 
 use super::ActiveSpotAssetCtx;
 
@@ -53,16 +53,16 @@ pub(crate) struct WsManager {
 #[serde(rename_all = "camelCase")]
 pub enum Subscription {
     AllMids,
-    Notification { user: H160 },
-    WebData2 { user: H160 },
+    Notification { user: Address },
+    WebData2 { user: Address },
     Candle { coin: String, interval: String },
     L2Book { coin: String },
     Trades { coin: String },
-    OrderUpdates { user: H160 },
-    UserEvents { user: H160 },
-    UserFills { user: H160 },
-    UserFundings { user: H160 },
-    UserNonFundingLedgerUpdates { user: H160 },
+    OrderUpdates { user: Address },
+    UserEvents { user: Address },
+    UserFills { user: Address },
+    UserFundings { user: Address },
+    UserNonFundingLedgerUpdates { user: Address },
     ActiveAssetCtx { coin: String },
 }
 #[derive(Deserialize, Clone, Debug)]

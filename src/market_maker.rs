@@ -1,7 +1,4 @@
-use ethers::{
-    signers::{LocalWallet, Signer},
-    types::H160,
-};
+use alloy::{primitives::Address, signers::local::PrivateKeySigner};
 use log::{error, info};
 
 use tokio::sync::mpsc::unbounded_channel;
@@ -26,7 +23,7 @@ pub struct MarketMakerInput {
     pub max_bps_diff: u16, // Max deviation before we cancel and put new orders on the book (in BPS)
     pub max_absolute_position_size: f64, // Absolute value of the max position we can take on
     pub decimals: u32,     // Decimals to round to for pricing
-    pub wallet: LocalWallet, // Wallet containing private key
+    pub wallet: PrivateKeySigner, // Wallet containing private key
 }
 
 #[derive(Debug)]
@@ -42,8 +39,8 @@ pub struct MarketMaker {
     pub cur_position: f64,
     pub latest_mid_price: f64,
     pub info_client: InfoClient,
-    pub exchange_client: ExchangeClient,
-    pub user_address: H160,
+    pub exchange_client: ExchangeClient<PrivateKeySigner>,
+    pub user_address: Address,
 }
 
 impl MarketMaker {

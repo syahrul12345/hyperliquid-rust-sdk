@@ -42,7 +42,7 @@ pub struct ExchangeClient<T: Signer> {
 #[serde(rename_all = "camelCase")]
 struct ExchangePayload {
     action: serde_json::Value,
-    signature: Signature,
+    signature: ethers::types::Signature,
     nonce: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     vault_address: Option<Address>,
@@ -134,9 +134,14 @@ impl<T: Signer> ExchangeClient<T> {
         signature: Signature,
         nonce: u64,
     ) -> Result<ExchangeResponseStatus> {
+        let rec_id = signature.recid();
         let exchange_payload = ExchangePayload {
             action,
-            signature,
+            signature: ethers::types::Signature {
+                r: ethers::types::U256(signature.r().into_limbs()),
+                s: ethers::types::U256(signature.s().into_limbs()),
+                v: u8::from(rec_id) as u64 + 27,
+            },
             nonce,
             vault_address: self.vault_address,
         };

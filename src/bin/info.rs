@@ -2,23 +2,24 @@ use alloy::primitives::Address;
 use hyperliquid_rust_sdk::{BaseUrl, InfoClient};
 use log::info;
 
-const ADDRESS: &str = "0x0bd592152216b0d21175c8cf856b5be05f3a7c3e";
+const ADDRESS: &str = "0x6FD45EE91654730b67c4E6e67804cDEC31EcF38d";
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
     let info_client = InfoClient::new(None, Some(BaseUrl::Mainnet)).await.unwrap();
-    // open_orders_example(&info_client).await;
-    user_state_example(&info_client).await;
+    // let meta = info_client.meta().await.unwrap();
+    // println!("{:?}", meta);
+    open_orders_example(&info_client).await;
+    // user_state_example(&info_client).await;
     // user_states_example(&info_client).await;
-    // recent_trades(&info_client).await;
     // meta_example(&info_client).await;
     // all_mids_example(&info_client).await;
     // user_fills_example(&info_client).await;
     // funding_history_example(&info_client).await;
     // l2_snapshot_example(&info_client).await;
     // candles_snapshot_example(&info_client).await;
-    user_token_balances_example(&info_client).await;
+    // user_token_balances_example(&info_client).await;
     // user_fees_example(&info_client).await;
     // user_funding_example(&info_client).await;
     // spot_meta_example(&info_client).await;
@@ -37,7 +38,7 @@ async fn open_orders_example(info_client: &InfoClient) {
 
     info!(
         "Open order data for {user}: {:?}",
-        info_client.open_orders(user).await.unwrap()
+        info_client.frontend_open_orders(user).await.unwrap()
     );
 }
 

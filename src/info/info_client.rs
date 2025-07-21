@@ -2,13 +2,7 @@ use crate::{
     info::{
         CandlesSnapshotResponse, FundingHistoryResponse, L2SnapshotResponse, OpenOrdersResponse,
         OrderInfo, RecentTradesResponse, UserFillsResponse, UserStateResponse,
-    },
-    meta::{Meta, SpotMeta, SpotMetaAndAssetCtxs},
-    prelude::*,
-    req::HttpClient,
-    ws::{Subscription, WsManager},
-    BaseUrl, Error, Message, OrderStatusResponse, ReferralResponse, UserFeesResponse,
-    UserFundingResponse, UserTokenBalanceResponse,
+    }, meta::{Meta, SpotMeta, SpotMetaAndAssetCtxs}, prelude::*, req::HttpClient, ws::{Subscription, WsManager}, BaseUrl, Error, FrontendOpenOrdersResponse, Message, OrderStatusResponse, ReferralResponse, UserFeesResponse, UserFundingResponse, UserTokenBalanceResponse
 };
 
 use alloy::primitives::Address;
@@ -47,6 +41,9 @@ pub enum InfoRequest {
         user: Address,
     },
     OpenOrders {
+        user: Address,
+    },
+    FrontendOpenOrders {
         user: Address,
     },
     OrderStatus {
@@ -177,6 +174,11 @@ impl InfoClient {
 
     pub async fn open_orders(&self, address: Address) -> Result<Vec<OpenOrdersResponse>> {
         let input = InfoRequest::OpenOrders { user: address };
+        self.send_info_request(input).await
+    }
+
+    pub async fn frontend_open_orders(&self, address: Address) -> Result<Vec<FrontendOpenOrdersResponse>> {
+        let input = InfoRequest::FrontendOpenOrders { user: address };
         self.send_info_request(input).await
     }
 

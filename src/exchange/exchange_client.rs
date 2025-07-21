@@ -225,6 +225,30 @@ impl<T: Signer> ExchangeClient<T> {
         self.post(action, signature, timestamp).await
     }
 
+    pub async fn transfer_usd_to_perp(
+        &self,
+        usdc: String,
+        wallet: Option<&T>,
+    ) -> Result<ExchangeResponseStatus> {
+        let wallet = wallet.unwrap_or(&self.wallet);
+        let timestamp = next_nonce();
+        let usd_send = UsdClassTransfer {
+            hyperliquid_chain: if self.http_client.is_mainnet() {
+                "Mainnet".to_string()
+            } else {
+                "Testnet".to_string()
+            },
+            signature_chain_id: U256::from(0xa4b1),
+            amount: usdc,
+            to_perp: true,
+            nonce: timestamp,
+        };
+        let signature = sign_typed_data(&usd_send, wallet).await?;
+        let action = serde_json::to_value(&Actions::UsdClassTransfer(usd_send))
+            .map_err(|e| Error::JsonParse(e.to_string()))?;
+        self.post(action, signature, timestamp).await
+    }
+
     pub async fn approve_builder_fee(
         &self,
         builder: Address,

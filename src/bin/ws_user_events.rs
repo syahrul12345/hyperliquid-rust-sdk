@@ -13,20 +13,20 @@ use tokio::{
 #[tokio::main]
 async fn main() {
     env_logger::init();
-    let mut info_client = InfoClient::new(None, Some(BaseUrl::Testnet)).await.unwrap();
-    let user = Address::from_str("0x0bd592152216b0d21175c8cf856b5be05f3a7c3e").unwrap();
-
+    let mut info_client = InfoClient::new(None, Some(BaseUrl::Mainnet)).await.unwrap();
+    let user = Address::from_str("0x6fd45ee91654730b67c4e6e67804cdec31ecf38d").unwrap();
+    info!("Starting user events subscription for user: {user}");
     let (sender, mut receiver) = unbounded_channel();
     let subscription_id = info_client
         .subscribe(Subscription::UserEvents { user }, sender)
         .await
         .unwrap();
 
-    spawn(async move {
-        sleep(Duration::from_secs(30)).await;
-        info!("Unsubscribing from user events data");
-        info_client.unsubscribe(subscription_id).await.unwrap()
-    });
+    // spawn(async move {
+    //     sleep(Duration::from_secs(30)).await;
+    //     info!("Unsubscribing from user events data");
+    //     info_client.unsubscribe(subscription_id).await.unwrap()
+    // });
 
     // this loop ends when we unsubscribe
     while let Some(Message::User(user_event)) = receiver.recv().await {

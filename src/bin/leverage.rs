@@ -11,12 +11,12 @@ async fn main() {
     let wallet: PrivateKeySigner = "e908f86dbb4d55ac876378565aafeabc187f6690f046459397b17d9b9a19688e"
         .parse()
         .unwrap();
+    let info_client = InfoClient::new(None, Some(BaseUrl::Testnet)).await.unwrap();
 
     let address = wallet.address();
-    let exchange_client = ExchangeClient::new(None, wallet, Some(BaseUrl::Testnet), None, None)
+    let exchange_client = ExchangeClient::new(None, wallet, Some(BaseUrl::Mainnet), None, None)
         .await
         .unwrap();
-    let info_client = InfoClient::new(None, Some(BaseUrl::Testnet)).await.unwrap();
 
     let response = exchange_client
         .update_leverage(5, "ETH", false, None)
@@ -29,8 +29,10 @@ async fn main() {
         .await
         .unwrap();
 
-    info!("Update isolated margin response: {response:?}");
+    // info!("Update isolated margin response: {response:?}");
 
-    let user_state = info_client.user_state(address).await.unwrap();
+    let info_client = InfoClient::new(None, Some(BaseUrl::Mainnet)).await.unwrap();
+
+    let user_state = info_client.user_state("0x45d3730A8F811519f3CC310d54FFc4D2142b3773".parse().unwrap()).await.unwrap();
     info!("User state: {user_state:?}");
 }

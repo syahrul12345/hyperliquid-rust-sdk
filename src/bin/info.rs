@@ -10,7 +10,7 @@ async fn main() {
     let info_client = InfoClient::new(None, Some(BaseUrl::Mainnet)).await.unwrap();
     // let meta = info_client.meta().await.unwrap();
     // println!("{:?}", meta);
-    open_orders_example(&info_client).await;
+    // open_orders_example(&info_client).await;
     // user_state_example(&info_client).await;
     // user_states_example(&info_client).await;
     // meta_example(&info_client).await;
@@ -18,7 +18,7 @@ async fn main() {
     // user_fills_example(&info_client).await;
     // funding_history_example(&info_client).await;
     // l2_snapshot_example(&info_client).await;
-    // candles_snapshot_example(&info_client).await;
+    candles_snapshot_example(&info_client).await;
     // user_token_balances_example(&info_client).await;
     // user_fees_example(&info_client).await;
     // user_funding_example(&info_client).await;
@@ -126,8 +126,11 @@ async fn l2_snapshot_example(info_client: &InfoClient) {
 
 async fn candles_snapshot_example(info_client: &InfoClient) {
     let coin = "ETH";
-    let start_timestamp = 1690540602225;
-    let end_timestamp = 1690569402225;
+    let end_timestamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_millis() as u64;
+    let start_timestamp = end_timestamp - 1000 * 60 * 60 * 24 * 30;
     let interval = "1h";
 
     info!(

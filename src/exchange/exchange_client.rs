@@ -71,10 +71,6 @@ pub enum Actions {
 
 impl Actions {
     fn hash(&self, timestamp: u64, vault_address: Option<Address>) -> Result<B256> {
-        println!(
-            "signing timestamp {} vault_address {:?}",
-            timestamp, vault_address
-        );
         let mut bytes =
             rmp_serde::to_vec_named(self).map_err(|e| Error::RmpParse(e.to_string()))?;
         bytes.extend(timestamp.to_be_bytes());
@@ -307,6 +303,7 @@ impl<T: Signer> ExchangeClient<T> {
     pub async fn market_open(
         &self,
         params: MarketOrderParams<'_, T>,
+        grouping: String,
     ) -> Result<ExchangeResponseStatus> {
         let slippage = params.slippage.unwrap_or(0.05); // Default 5% slippage
         let (px, sz_decimals) = self
@@ -325,7 +322,7 @@ impl<T: Signer> ExchangeClient<T> {
             }),
         };
 
-        self.order(order, params.wallet).await
+        self.order(order, params.wallet, grouping).await
     }
 
     pub async fn market_open_with_builder(
@@ -356,6 +353,7 @@ impl<T: Signer> ExchangeClient<T> {
     pub async fn market_close(
         &self,
         params: MarketCloseParams<'_, T>,
+        grouping: String,
     ) -> Result<ExchangeResponseStatus> {
         let slippage = params.slippage.unwrap_or(0.05); // Default 5% slippage
         let wallet = params.wallet.unwrap_or(&self.wallet);
@@ -398,7 +396,7 @@ impl<T: Signer> ExchangeClient<T> {
             }),
         };
 
-        self.order(order, Some(wallet)).await
+        self.order(order, Some(wallet), grouping).await
     }
 
     async fn calculate_slippage_price(
@@ -460,8 +458,9 @@ impl<T: Signer> ExchangeClient<T> {
         &self,
         order: ClientOrderRequest,
         wallet: Option<&T>,
+        grouping: String,
     ) -> Result<ExchangeResponseStatus> {
-        self.bulk_order(vec![order], wallet).await
+        self.bulk_order(vec![order], wallet, grouping).await
     }
 
     pub async fn order_with_builder(
@@ -478,6 +477,7 @@ impl<T: Signer> ExchangeClient<T> {
         &self,
         orders: Vec<ClientOrderRequest>,
         wallet: Option<&T>,
+        grouping: String,
     ) -> Result<ExchangeResponseStatus> {
         let wallet = wallet.unwrap_or(&self.wallet);
         let timestamp = next_nonce();
@@ -490,7 +490,7 @@ impl<T: Signer> ExchangeClient<T> {
 
         let action = Actions::Order(BulkOrder {
             orders: transformed_orders,
-            grouping: "na".to_string(),
+            grouping: grouping,
             builder: None,
         });
         let connection_id = action.hash(timestamp, self.vault_address)?;

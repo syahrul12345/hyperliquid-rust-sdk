@@ -1,7 +1,7 @@
 use alloy::primitives::Address;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Leverage {
     #[serde(rename = "type")]
@@ -10,7 +10,7 @@ pub struct Leverage {
     pub raw_usd: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct CumulativeFunding {
     pub all_time: String,
@@ -18,7 +18,7 @@ pub struct CumulativeFunding {
     pub since_change: String,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct PositionData {
     pub coin: String,
@@ -34,7 +34,7 @@ pub struct PositionData {
     pub cum_funding: CumulativeFunding,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AssetPosition {
     pub position: PositionData,
     #[serde(rename = "type")]

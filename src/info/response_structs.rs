@@ -111,7 +111,7 @@ pub struct RecentTradesResponse {
     pub hash: String,
 }
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(serde::Deserialize, Debug, Clone)]
 pub struct CandlesSnapshotResponse {
     #[serde(rename = "t")]
     pub time_open: u64,

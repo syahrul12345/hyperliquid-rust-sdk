@@ -14,7 +14,7 @@ use tokio::{
 async fn main() {
     env_logger::init();
     let mut info_client = InfoClient::new(None, Some(BaseUrl::Mainnet)).await.unwrap();
-    let user = Address::from_str("0x6fd45ee91654730b67c4e6e67804cdec31ecf38d").unwrap();
+    let user = Address::from_str("0x59cdE545242534eCc0b3067EbCDce64E2bA64df0").unwrap();
 
     let (sender, mut receiver) = unbounded_channel();
     let subscription_id = info_client

@@ -329,6 +329,7 @@ impl<T: Signer> ExchangeClient<T> {
         &self,
         params: MarketOrderParams<'_, T>,
         builder: BuilderInfo,
+        grouping: String,
     ) -> Result<ExchangeResponseStatus> {
         let slippage = params.slippage.unwrap_or(0.05); // Default 5% slippage
         let (px, sz_decimals) = self
@@ -347,7 +348,7 @@ impl<T: Signer> ExchangeClient<T> {
             }),
         };
 
-        self.order_with_builder(order, params.wallet, builder).await
+        self.order_with_builder(order, params.wallet, builder, grouping).await
     }
 
     pub async fn market_close(
@@ -468,9 +469,9 @@ impl<T: Signer> ExchangeClient<T> {
         order: ClientOrderRequest,
         wallet: Option<&T>,
         builder: BuilderInfo,
+        grouping: String,
     ) -> Result<ExchangeResponseStatus> {
-        self.bulk_order_with_builder(vec![order], wallet, builder)
-            .await
+        self.bulk_order_with_builder(vec![order], wallet, builder, grouping).await
     }
 
     pub async fn bulk_order(
@@ -506,6 +507,7 @@ impl<T: Signer> ExchangeClient<T> {
         orders: Vec<ClientOrderRequest>,
         wallet: Option<&T>,
         mut builder: BuilderInfo,
+        grouping: String,
     ) -> Result<ExchangeResponseStatus> {
         let wallet = wallet.unwrap_or(&self.wallet);
         let timestamp = next_nonce();
@@ -520,7 +522,7 @@ impl<T: Signer> ExchangeClient<T> {
 
         let action = Actions::Order(BulkOrder {
             orders: transformed_orders,
-            grouping: "na".to_string(),
+            grouping: grouping,
             builder: Some(builder),
         });
         let connection_id = action.hash(timestamp, self.vault_address)?;
